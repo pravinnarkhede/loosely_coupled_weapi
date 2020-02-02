@@ -11,45 +11,45 @@ using CoditasAssignment.Data.ViewModel;
 
 namespace CoditasAssignemnt.Controllers
 {
-    public class ProductController : ApiController
+    public class ItemController : ApiController
     {
-        private readonly IProductService productService;
+        private readonly IItemService itemService;
 
-        public ProductController(IProductService productService)
+        public ItemController(IItemService itemService)
         {
-            this.productService = productService;
+            this.itemService = itemService;
         }
 
-        // GET: api/Product
-        public Response<List<ProductViewModel>> Get()
+        // GET: api/Item
+        public Response<List<ItemViewModel>> Get()
         {
-            var products = productService.GetProducts();
-            return products;
+            var items = itemService.GetItems();
+            return items;
         }
 
-        // GET: api/Product/5
-        public Response<ProductViewModel> Get(int id)
+        // GET: api/Item/5
+        public Response<ItemViewModel> Get(int id)
         {
-            var product = productService.GetProduct(id);
-            return product;
+            var item = itemService.GetItem(id);
+            return item;
         }
 
-        // POST: api/Product
-        public Response<ProductViewModel> Post(ProductViewModel product)
+        // POST: api/Item
+        public Response<ItemViewModel> Post(ItemViewModel item)
         {
-            return productService.AddProduct(product);
+            return itemService.AddItem(item);
         }
 
-        // PUT: api/Product/5
-        public Response<ProductViewModel> Put(ProductViewModel product)
+        // PUT: api/Item/5
+        public Response<ItemViewModel> Put(ItemViewModel item)
         {
-            return productService.UpdateProduct(product);
+            return itemService.UpdateItem(item);
         }
 
-        // DELETE: api/Product/5
-        public Response<ProductViewModel> Delete(int id)
+        // DELETE: api/Item/5
+        public Response<ItemViewModel> Delete(int id)
         {
-            return productService.DeleteProduct(id);
+            return itemService.DeleteItem(id);
         }
     }
 }

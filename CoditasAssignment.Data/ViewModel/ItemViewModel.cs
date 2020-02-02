@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoditasAssignment.Data.ViewModel
 {
-    public class ProductViewModel
+    public class ItemViewModel
     {
         public int Id { get; set; }
         public Nullable<int> CategoryId { get; set; }

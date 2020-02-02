@@ -41,7 +41,7 @@ namespace CoditasAssignment.App_Start
                 .Where(t => t.Name.EndsWith("Repository"))
                 .AsImplementedInterfaces().InstancePerRequest();
 
-            builder.RegisterAssemblyTypes(typeof(ProductRepository).Assembly)
+            builder.RegisterAssemblyTypes(typeof(ItemRepository).Assembly)
                .Where(t => t.Name.EndsWith("Repository"))
                .AsImplementedInterfaces().InstancePerRequest();
 
@@ -54,7 +54,7 @@ namespace CoditasAssignment.App_Start
                .Where(t => t.Name.EndsWith("Service"))
                .AsImplementedInterfaces().InstancePerRequest();
 
-            builder.RegisterAssemblyTypes(typeof(ProductService).Assembly)
+            builder.RegisterAssemblyTypes(typeof(ItemService).Assembly)
                .Where(t => t.Name.EndsWith("Service"))
                .AsImplementedInterfaces().InstancePerRequest();
 

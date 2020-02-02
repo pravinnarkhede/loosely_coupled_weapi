@@ -12,13 +12,13 @@ namespace CoditasAssignment.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class OrderProductModifire
+    public partial class OrderItemModifire
     {
         public int id { get; set; }
-        public int order_product_id { get; set; }
+        public int order_item_id { get; set; }
         public int modifire_id { get; set; }
     
-        public virtual Modifire Modifire { get; set; }
-        public virtual OrderProduct OrderProduct { get; set; }
+        public virtual ItemModifire ItemModifire { get; set; }
+        public virtual OrderItem OrderItem { get; set; }
     }
 }

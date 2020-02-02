@@ -65,6 +65,12 @@
     <Compile Include="Infrastructure\ReositoryBase.cs" />
     <Compile Include="Infrastructure\Response.cs" />
     <Compile Include="Infrastructure\UnitOfWork.cs" />
+    <Compile Include="Item.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ItemModifire.cs">
+      <DependentUpon>Model.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -80,29 +86,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Model.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Modifire.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
     <Compile Include="Order.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="OrderProduct.cs">
+    <Compile Include="OrderItem.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
-    <Compile Include="OrderProductModifire.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Product.cs">
-      <DependentUpon>Model.tt</DependentUpon>
-    </Compile>
-    <Compile Include="ProductModifire.cs">
+    <Compile Include="OrderItemModifire.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\CategoryRepository.cs" />
-    <Compile Include="Repository\ModifireRepository.cs" />
     <Compile Include="Repository\OrderRepository.cs" />
-    <Compile Include="Repository\ProductRepository.cs" />
+    <Compile Include="Repository\ItemRepository.cs" />
     <Compile Include="Repository\StoreRepository.cs" />
     <Compile Include="Store.cs">
       <DependentUpon>Model.tt</DependentUpon>
@@ -113,7 +109,7 @@
     <Compile Include="ViewModel\CategoryViewModel.cs" />
     <Compile Include="ViewModel\ModifireViewModel.cs" />
     <Compile Include="ViewModel\OrderViewModel.cs" />
-    <Compile Include="ViewModel\ProductViewModel.cs" />
+    <Compile Include="ViewModel\ItemViewModel.cs" />
     <Compile Include="ViewModel\StoreViewModel.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -26,12 +26,11 @@ namespace CoditasAssignment.Data
         }
     
         public virtual DbSet<Category> Categories { get; set; }
-        public virtual DbSet<Modifire> Modifires { get; set; }
-        public virtual DbSet<OrderProductModifire> OrderProductModifires { get; set; }
-        public virtual DbSet<OrderProduct> OrderProducts { get; set; }
+        public virtual DbSet<ItemModifire> ItemModifires { get; set; }
+        public virtual DbSet<Item> Items { get; set; }
+        public virtual DbSet<OrderItemModifire> OrderItemModifires { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
-        public virtual DbSet<ProductModifire> ProductModifires { get; set; }
-        public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<StoreCategory> StoreCategories { get; set; }
         public virtual DbSet<Store> Stores { get; set; }
     }

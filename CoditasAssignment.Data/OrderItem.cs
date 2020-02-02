@@ -12,24 +12,24 @@ namespace CoditasAssignment.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class OrderProduct
+    public partial class OrderItem
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public OrderProduct()
+        public OrderItem()
         {
-            this.OrderProductModifires = new HashSet<OrderProductModifire>();
+            this.OrderItemModifires = new HashSet<OrderItemModifire>();
         }
     
         public int id { get; set; }
         public int order_id { get; set; }
-        public int product_id { get; set; }
+        public int item_id { get; set; }
         public decimal price { get; set; }
         public int quantity { get; set; }
         public decimal total { get; set; }
     
+        public virtual Item Item { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderProductModifire> OrderProductModifires { get; set; }
+        public virtual ICollection<OrderItemModifire> OrderItemModifires { get; set; }
         public virtual Order Order { get; set; }
-        public virtual Product Product { get; set; }
     }
 }

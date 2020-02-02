@@ -1,4 +1,4 @@
-﻿using CoditasAssignemnt.Mappings;
+﻿using CoditasAssignment.Service;
 using System.Web.Http;
 
 namespace CoditasAssignment.App_Start

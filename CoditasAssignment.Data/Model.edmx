@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="AssignmentEntities.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="AssignmentModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Categories">
           <Key>
             <PropertyRef Name="id" />
@@ -12,30 +12,39 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="32" Nullable="false" />
         </EntityType>
-        <EntityType Name="Modifires">
+        <EntityType Name="ItemModifires">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="product_id" Type="int" />
+          <Property Name="item_id" Type="int" Nullable="false" />
           <Property Name="name" Type="nvarchar" MaxLength="32" Nullable="false" />
           <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
-        <EntityType Name="OrderProductModifires">
+        <EntityType Name="Items">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="order_product_id" Type="int" Nullable="false" />
+          <Property Name="category_id" Type="int" />
+          <Property Name="name" Type="nvarchar" MaxLength="32" Nullable="false" />
+          <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+        </EntityType>
+        <EntityType Name="OrderItemModifires">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="order_item_id" Type="int" Nullable="false" />
           <Property Name="modifire_id" Type="int" Nullable="false" />
         </EntityType>
-        <EntityType Name="OrderProducts">
+        <EntityType Name="OrderItems">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="order_id" Type="int" Nullable="false" />
-          <Property Name="product_id" Type="int" Nullable="false" />
+          <Property Name="item_id" Type="int" Nullable="false" />
           <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="quantity" Type="int" Nullable="false" />
           <Property Name="total" Type="decimal" Precision="18" Scale="2" Nullable="false" />
@@ -51,23 +60,6 @@
           <Property Name="sub_total" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="tax" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="total" Type="decimal" Precision="18" Scale="2" Nullable="false" />
-        </EntityType>
-        <EntityType Name="ProductModifires">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="product_id" Type="int" Nullable="false" />
-          <Property Name="modifire_id" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="Products">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="category_id" Type="int" />
-          <Property Name="name" Type="nvarchar" MaxLength="32" Nullable="false" />
-          <Property Name="price" Type="decimal" Precision="18" Scale="2" Nullable="false" />
         </EntityType>
         <EntityType Name="StoreCategories">
           <Key>
@@ -87,67 +79,79 @@
           <Property Name="city" Type="nvarchar" MaxLength="32" />
           <Property Name="address" Type="nvarchar(max)" />
         </EntityType>
-        <Association Name="FK__Modifires__produ__4316F928">
-          <End Role="Products" Type="Self.Products" Multiplicity="0..1" />
-          <End Role="Modifires" Type="Self.Modifires" Multiplicity="*" />
+        <Association Name="FK__ItemModif__item___4316F928">
+          <End Role="Items" Type="Self.Items" Multiplicity="1" />
+          <End Role="ItemModifires" Type="Self.ItemModifires" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Products">
+            <Principal Role="Items">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Modifires">
-              <PropertyRef Name="product_id" />
+            <Dependent Role="ItemModifires">
+              <PropertyRef Name="item_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__modif__5165187F">
-          <End Role="Modifires" Type="Self.Modifires" Multiplicity="1" />
-          <End Role="OrderProductModifires" Type="Self.OrderProductModifires" Multiplicity="*" />
+        <Association Name="FK__Items__category___403A8C7D">
+          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
+          <End Role="Items" Type="Self.Items" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Modifires">
+            <Principal Role="Categories">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="OrderProductModifires">
+            <Dependent Role="Items">
+              <PropertyRef Name="category_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__OrderItem__item___49C3F6B7">
+          <End Role="Items" Type="Self.Items" Multiplicity="1" />
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Items">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="OrderItems">
+              <PropertyRef Name="item_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__OrderItem__modif__4D94879B">
+          <End Role="ItemModifires" Type="Self.ItemModifires" Multiplicity="1" />
+          <End Role="OrderItemModifires" Type="Self.OrderItemModifires" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ItemModifires">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="OrderItemModifires">
               <PropertyRef Name="modifire_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__order__4CA06362">
+        <Association Name="FK__OrderItem__order__48CFD27E">
           <End Role="Orders" Type="Self.Orders" Multiplicity="1" />
-          <End Role="OrderProducts" Type="Self.OrderProducts" Multiplicity="*" />
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Orders">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="OrderProducts">
+            <Dependent Role="OrderItems">
               <PropertyRef Name="order_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__order__5070F446">
-          <End Role="OrderProducts" Type="Self.OrderProducts" Multiplicity="1" />
-          <End Role="OrderProductModifires" Type="Self.OrderProductModifires" Multiplicity="*" />
+        <Association Name="FK__OrderItem__order__4CA06362">
+          <End Role="OrderItems" Type="Self.OrderItems" Multiplicity="1" />
+          <End Role="OrderItemModifires" Type="Self.OrderItemModifires" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OrderProducts">
+            <Principal Role="OrderItems">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="OrderProductModifires">
-              <PropertyRef Name="order_product_id" />
+            <Dependent Role="OrderItemModifires">
+              <PropertyRef Name="order_item_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__produ__4D94879B">
-          <End Role="Products" Type="Self.Products" Multiplicity="1" />
-          <End Role="OrderProducts" Type="Self.OrderProducts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="OrderProducts">
-              <PropertyRef Name="product_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Orders__store_id__49C3F6B7">
+        <Association Name="FK__Orders__store_id__45F365D3">
           <End Role="Stores" Type="Self.Stores" Multiplicity="1" />
           <End Role="Orders" Type="Self.Orders" Multiplicity="*" />
           <ReferentialConstraint>
@@ -156,42 +160,6 @@
             </Principal>
             <Dependent Role="Orders">
               <PropertyRef Name="store_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__ProductMo__modif__46E78A0C">
-          <End Role="Modifires" Type="Self.Modifires" Multiplicity="1" />
-          <End Role="ProductModifires" Type="Self.ProductModifires" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Modifires">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="ProductModifires">
-              <PropertyRef Name="modifire_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__ProductMo__produ__45F365D3">
-          <End Role="Products" Type="Self.Products" Multiplicity="1" />
-          <End Role="ProductModifires" Type="Self.ProductModifires" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="ProductModifires">
-              <PropertyRef Name="product_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Products__catego__403A8C7D">
-          <End Role="Categories" Type="Self.Categories" Multiplicity="0..1" />
-          <End Role="Products" Type="Self.Products" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Categories">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Products">
-              <PropertyRef Name="category_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -219,51 +187,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="AssignmentEntitiesStoreContainer">
+        <EntityContainer Name="AssignmentModelStoreContainer">
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Modifires" EntityType="Self.Modifires" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OrderProductModifires" EntityType="Self.OrderProductModifires" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="OrderProducts" EntityType="Self.OrderProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ItemModifires" EntityType="Self.ItemModifires" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Items" EntityType="Self.Items" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderItemModifires" EntityType="Self.OrderItemModifires" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="OrderItems" EntityType="Self.OrderItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Orders" EntityType="Self.Orders" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="ProductModifires" EntityType="Self.ProductModifires" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="StoreCategories" EntityType="Self.StoreCategories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Stores" EntityType="Self.Stores" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__Modifires__produ__4316F928" Association="Self.FK__Modifires__produ__4316F928">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="Modifires" EntitySet="Modifires" />
+          <AssociationSet Name="FK__ItemModif__item___4316F928" Association="Self.FK__ItemModif__item___4316F928">
+            <End Role="Items" EntitySet="Items" />
+            <End Role="ItemModifires" EntitySet="ItemModifires" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__modif__5165187F" Association="Self.FK__OrderProd__modif__5165187F">
-            <End Role="Modifires" EntitySet="Modifires" />
-            <End Role="OrderProductModifires" EntitySet="OrderProductModifires" />
+          <AssociationSet Name="FK__Items__category___403A8C7D" Association="Self.FK__Items__category___403A8C7D">
+            <End Role="Categories" EntitySet="Categories" />
+            <End Role="Items" EntitySet="Items" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__order__4CA06362" Association="Self.FK__OrderProd__order__4CA06362">
+          <AssociationSet Name="FK__OrderItem__item___49C3F6B7" Association="Self.FK__OrderItem__item___49C3F6B7">
+            <End Role="Items" EntitySet="Items" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
+          </AssociationSet>
+          <AssociationSet Name="FK__OrderItem__modif__4D94879B" Association="Self.FK__OrderItem__modif__4D94879B">
+            <End Role="ItemModifires" EntitySet="ItemModifires" />
+            <End Role="OrderItemModifires" EntitySet="OrderItemModifires" />
+          </AssociationSet>
+          <AssociationSet Name="FK__OrderItem__order__48CFD27E" Association="Self.FK__OrderItem__order__48CFD27E">
             <End Role="Orders" EntitySet="Orders" />
-            <End Role="OrderProducts" EntitySet="OrderProducts" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__order__5070F446" Association="Self.FK__OrderProd__order__5070F446">
-            <End Role="OrderProducts" EntitySet="OrderProducts" />
-            <End Role="OrderProductModifires" EntitySet="OrderProductModifires" />
+          <AssociationSet Name="FK__OrderItem__order__4CA06362" Association="Self.FK__OrderItem__order__4CA06362">
+            <End Role="OrderItems" EntitySet="OrderItems" />
+            <End Role="OrderItemModifires" EntitySet="OrderItemModifires" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__produ__4D94879B" Association="Self.FK__OrderProd__produ__4D94879B">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="OrderProducts" EntitySet="OrderProducts" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Orders__store_id__49C3F6B7" Association="Self.FK__Orders__store_id__49C3F6B7">
+          <AssociationSet Name="FK__Orders__store_id__45F365D3" Association="Self.FK__Orders__store_id__45F365D3">
             <End Role="Stores" EntitySet="Stores" />
             <End Role="Orders" EntitySet="Orders" />
-          </AssociationSet>
-          <AssociationSet Name="FK__ProductMo__modif__46E78A0C" Association="Self.FK__ProductMo__modif__46E78A0C">
-            <End Role="Modifires" EntitySet="Modifires" />
-            <End Role="ProductModifires" EntitySet="ProductModifires" />
-          </AssociationSet>
-          <AssociationSet Name="FK__ProductMo__produ__45F365D3" Association="Self.FK__ProductMo__produ__45F365D3">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="ProductModifires" EntitySet="ProductModifires" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Products__catego__403A8C7D" Association="Self.FK__Products__catego__403A8C7D">
-            <End Role="Categories" EntitySet="Categories" />
-            <End Role="Products" EntitySet="Products" />
           </AssociationSet>
           <AssociationSet Name="FK__StoreCate__categ__3C69FB99" Association="Self.FK__StoreCate__categ__3C69FB99">
             <End Role="Categories" EntitySet="Categories" />
@@ -278,51 +237,62 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="AssignmentEntities" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="AssignmentModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="Category">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="name" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Products" Relationship="Self.FK__Products__catego__403A8C7D" FromRole="Categories" ToRole="Products" />
+          <NavigationProperty Name="Items" Relationship="Self.FK__Items__category___403A8C7D" FromRole="Categories" ToRole="Items" />
           <NavigationProperty Name="StoreCategories" Relationship="Self.FK__StoreCate__categ__3C69FB99" FromRole="Categories" ToRole="StoreCategories" />
         </EntityType>
-        <EntityType Name="Modifire">
+        <EntityType Name="ItemModifire">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="product_id" Type="Int32" />
+          <Property Name="item_id" Type="Int32" Nullable="false" />
           <Property Name="name" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__Modifires__produ__4316F928" FromRole="Modifires" ToRole="Products" />
-          <NavigationProperty Name="OrderProductModifires" Relationship="Self.FK__OrderProd__modif__5165187F" FromRole="Modifires" ToRole="OrderProductModifires" />
-          <NavigationProperty Name="ProductModifires" Relationship="Self.FK__ProductMo__modif__46E78A0C" FromRole="Modifires" ToRole="ProductModifires" />
+          <NavigationProperty Name="Item" Relationship="Self.FK__ItemModif__item___4316F928" FromRole="ItemModifires" ToRole="Items" />
+          <NavigationProperty Name="OrderItemModifires" Relationship="Self.FK__OrderItem__modif__4D94879B" FromRole="ItemModifires" ToRole="OrderItemModifires" />
         </EntityType>
-        <EntityType Name="OrderProductModifire">
+        <EntityType Name="Item">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="order_product_id" Type="Int32" Nullable="false" />
-          <Property Name="modifire_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Modifire" Relationship="Self.FK__OrderProd__modif__5165187F" FromRole="OrderProductModifires" ToRole="Modifires" />
-          <NavigationProperty Name="OrderProduct" Relationship="Self.FK__OrderProd__order__5070F446" FromRole="OrderProductModifires" ToRole="OrderProducts" />
+          <Property Name="category_id" Type="Int32" />
+          <Property Name="name" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <NavigationProperty Name="Category" Relationship="Self.FK__Items__category___403A8C7D" FromRole="Items" ToRole="Categories" />
+          <NavigationProperty Name="ItemModifires" Relationship="Self.FK__ItemModif__item___4316F928" FromRole="Items" ToRole="ItemModifires" />
+          <NavigationProperty Name="OrderItems" Relationship="Self.FK__OrderItem__item___49C3F6B7" FromRole="Items" ToRole="OrderItems" />
         </EntityType>
-        <EntityType Name="OrderProduct">
+        <EntityType Name="OrderItemModifire">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="order_item_id" Type="Int32" Nullable="false" />
+          <Property Name="modifire_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ItemModifire" Relationship="Self.FK__OrderItem__modif__4D94879B" FromRole="OrderItemModifires" ToRole="ItemModifires" />
+          <NavigationProperty Name="OrderItem" Relationship="Self.FK__OrderItem__order__4CA06362" FromRole="OrderItemModifires" ToRole="OrderItems" />
+        </EntityType>
+        <EntityType Name="OrderItem">
           <Key>
             <PropertyRef Name="id" />
           </Key>
           <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="order_id" Type="Int32" Nullable="false" />
-          <Property Name="product_id" Type="Int32" Nullable="false" />
+          <Property Name="item_id" Type="Int32" Nullable="false" />
           <Property Name="price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="quantity" Type="Int32" Nullable="false" />
           <Property Name="total" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <NavigationProperty Name="OrderProductModifires" Relationship="Self.FK__OrderProd__order__5070F446" FromRole="OrderProducts" ToRole="OrderProductModifires" />
-          <NavigationProperty Name="Order" Relationship="Self.FK__OrderProd__order__4CA06362" FromRole="OrderProducts" ToRole="Orders" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__OrderProd__produ__4D94879B" FromRole="OrderProducts" ToRole="Products" />
+          <NavigationProperty Name="Item" Relationship="Self.FK__OrderItem__item___49C3F6B7" FromRole="OrderItems" ToRole="Items" />
+          <NavigationProperty Name="OrderItemModifires" Relationship="Self.FK__OrderItem__order__4CA06362" FromRole="OrderItems" ToRole="OrderItemModifires" />
+          <NavigationProperty Name="Order" Relationship="Self.FK__OrderItem__order__48CFD27E" FromRole="OrderItems" ToRole="Orders" />
         </EntityType>
         <EntityType Name="Order">
           <Key>
@@ -335,31 +305,8 @@
           <Property Name="sub_total" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="tax" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="total" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <NavigationProperty Name="OrderProducts" Relationship="Self.FK__OrderProd__order__4CA06362" FromRole="Orders" ToRole="OrderProducts" />
-          <NavigationProperty Name="Store" Relationship="Self.FK__Orders__store_id__49C3F6B7" FromRole="Orders" ToRole="Stores" />
-        </EntityType>
-        <EntityType Name="ProductModifire">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="product_id" Type="Int32" Nullable="false" />
-          <Property Name="modifire_id" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="Modifire" Relationship="Self.FK__ProductMo__modif__46E78A0C" FromRole="ProductModifires" ToRole="Modifires" />
-          <NavigationProperty Name="Product" Relationship="Self.FK__ProductMo__produ__45F365D3" FromRole="ProductModifires" ToRole="Products" />
-        </EntityType>
-        <EntityType Name="Product">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="category_id" Type="Int32" />
-          <Property Name="name" Type="String" MaxLength="32" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="price" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <NavigationProperty Name="Category" Relationship="Self.FK__Products__catego__403A8C7D" FromRole="Products" ToRole="Categories" />
-          <NavigationProperty Name="Modifires" Relationship="Self.FK__Modifires__produ__4316F928" FromRole="Products" ToRole="Modifires" />
-          <NavigationProperty Name="OrderProducts" Relationship="Self.FK__OrderProd__produ__4D94879B" FromRole="Products" ToRole="OrderProducts" />
-          <NavigationProperty Name="ProductModifires" Relationship="Self.FK__ProductMo__produ__45F365D3" FromRole="Products" ToRole="ProductModifires" />
+          <NavigationProperty Name="OrderItems" Relationship="Self.FK__OrderItem__order__48CFD27E" FromRole="Orders" ToRole="OrderItems" />
+          <NavigationProperty Name="Store" Relationship="Self.FK__Orders__store_id__45F365D3" FromRole="Orders" ToRole="Stores" />
         </EntityType>
         <EntityType Name="StoreCategory">
           <Key>
@@ -380,17 +327,17 @@
           <Property Name="name" Type="String" MaxLength="64" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="city" Type="String" MaxLength="32" FixedLength="false" Unicode="true" />
           <Property Name="address" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__store_id__49C3F6B7" FromRole="Stores" ToRole="Orders" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__store_id__45F365D3" FromRole="Stores" ToRole="Orders" />
           <NavigationProperty Name="StoreCategories" Relationship="Self.FK__StoreCate__store__3B75D760" FromRole="Stores" ToRole="StoreCategories" />
         </EntityType>
-        <Association Name="FK__Products__catego__403A8C7D">
+        <Association Name="FK__Items__category___403A8C7D">
           <End Role="Categories" Type="Self.Category" Multiplicity="0..1" />
-          <End Role="Products" Type="Self.Product" Multiplicity="*" />
+          <End Role="Items" Type="Self.Item" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Categories">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Products">
+            <Dependent Role="Items">
               <PropertyRef Name="category_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -407,79 +354,67 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Modifires__produ__4316F928">
-          <End Role="Products" Type="Self.Product" Multiplicity="0..1" />
-          <End Role="Modifires" Type="Self.Modifire" Multiplicity="*" />
+        <Association Name="FK__ItemModif__item___4316F928">
+          <End Role="Items" Type="Self.Item" Multiplicity="1" />
+          <End Role="ItemModifires" Type="Self.ItemModifire" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Products">
+            <Principal Role="Items">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="Modifires">
-              <PropertyRef Name="product_id" />
+            <Dependent Role="ItemModifires">
+              <PropertyRef Name="item_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__modif__5165187F">
-          <End Role="Modifires" Type="Self.Modifire" Multiplicity="1" />
-          <End Role="OrderProductModifires" Type="Self.OrderProductModifire" Multiplicity="*" />
+        <Association Name="FK__OrderItem__modif__4D94879B">
+          <End Role="ItemModifires" Type="Self.ItemModifire" Multiplicity="1" />
+          <End Role="OrderItemModifires" Type="Self.OrderItemModifire" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Modifires">
+            <Principal Role="ItemModifires">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="OrderProductModifires">
+            <Dependent Role="OrderItemModifires">
               <PropertyRef Name="modifire_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__ProductMo__modif__46E78A0C">
-          <End Role="Modifires" Type="Self.Modifire" Multiplicity="1" />
-          <End Role="ProductModifires" Type="Self.ProductModifire" Multiplicity="*" />
+        <Association Name="FK__OrderItem__item___49C3F6B7">
+          <End Role="Items" Type="Self.Item" Multiplicity="1" />
+          <End Role="OrderItems" Type="Self.OrderItem" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="Modifires">
+            <Principal Role="Items">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="ProductModifires">
-              <PropertyRef Name="modifire_id" />
+            <Dependent Role="OrderItems">
+              <PropertyRef Name="item_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__order__5070F446">
-          <End Role="OrderProducts" Type="Self.OrderProduct" Multiplicity="1" />
-          <End Role="OrderProductModifires" Type="Self.OrderProductModifire" Multiplicity="*" />
+        <Association Name="FK__OrderItem__order__4CA06362">
+          <End Role="OrderItems" Type="Self.OrderItem" Multiplicity="1" />
+          <End Role="OrderItemModifires" Type="Self.OrderItemModifire" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="OrderProducts">
+            <Principal Role="OrderItems">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="OrderProductModifires">
-              <PropertyRef Name="order_product_id" />
+            <Dependent Role="OrderItemModifires">
+              <PropertyRef Name="order_item_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__order__4CA06362">
+        <Association Name="FK__OrderItem__order__48CFD27E">
           <End Role="Orders" Type="Self.Order" Multiplicity="1" />
-          <End Role="OrderProducts" Type="Self.OrderProduct" Multiplicity="*" />
+          <End Role="OrderItems" Type="Self.OrderItem" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Orders">
               <PropertyRef Name="id" />
             </Principal>
-            <Dependent Role="OrderProducts">
+            <Dependent Role="OrderItems">
               <PropertyRef Name="order_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__OrderProd__produ__4D94879B">
-          <End Role="Products" Type="Self.Product" Multiplicity="1" />
-          <End Role="OrderProducts" Type="Self.OrderProduct" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="OrderProducts">
-              <PropertyRef Name="product_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__Orders__store_id__49C3F6B7">
+        <Association Name="FK__Orders__store_id__45F365D3">
           <End Role="Stores" Type="Self.Store" Multiplicity="1" />
           <End Role="Orders" Type="Self.Order" Multiplicity="*" />
           <ReferentialConstraint>
@@ -488,18 +423,6 @@
             </Principal>
             <Dependent Role="Orders">
               <PropertyRef Name="store_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK__ProductMo__produ__45F365D3">
-          <End Role="Products" Type="Self.Product" Multiplicity="1" />
-          <End Role="ProductModifires" Type="Self.ProductModifire" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Products">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="ProductModifires">
-              <PropertyRef Name="product_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -515,55 +438,46 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="AssignmentEntities1" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="AssignmentEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Categories" EntityType="Self.Category" />
-          <EntitySet Name="Modifires" EntityType="Self.Modifire" />
-          <EntitySet Name="OrderProductModifires" EntityType="Self.OrderProductModifire" />
-          <EntitySet Name="OrderProducts" EntityType="Self.OrderProduct" />
+          <EntitySet Name="ItemModifires" EntityType="Self.ItemModifire" />
+          <EntitySet Name="Items" EntityType="Self.Item" />
+          <EntitySet Name="OrderItemModifires" EntityType="Self.OrderItemModifire" />
+          <EntitySet Name="OrderItems" EntityType="Self.OrderItem" />
           <EntitySet Name="Orders" EntityType="Self.Order" />
-          <EntitySet Name="ProductModifires" EntityType="Self.ProductModifire" />
-          <EntitySet Name="Products" EntityType="Self.Product" />
           <EntitySet Name="StoreCategories" EntityType="Self.StoreCategory" />
           <EntitySet Name="Stores" EntityType="Self.Store" />
-          <AssociationSet Name="FK__Products__catego__403A8C7D" Association="Self.FK__Products__catego__403A8C7D">
+          <AssociationSet Name="FK__Items__category___403A8C7D" Association="Self.FK__Items__category___403A8C7D">
             <End Role="Categories" EntitySet="Categories" />
-            <End Role="Products" EntitySet="Products" />
+            <End Role="Items" EntitySet="Items" />
           </AssociationSet>
           <AssociationSet Name="FK__StoreCate__categ__3C69FB99" Association="Self.FK__StoreCate__categ__3C69FB99">
             <End Role="Categories" EntitySet="Categories" />
             <End Role="StoreCategories" EntitySet="StoreCategories" />
           </AssociationSet>
-          <AssociationSet Name="FK__Modifires__produ__4316F928" Association="Self.FK__Modifires__produ__4316F928">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="Modifires" EntitySet="Modifires" />
+          <AssociationSet Name="FK__ItemModif__item___4316F928" Association="Self.FK__ItemModif__item___4316F928">
+            <End Role="Items" EntitySet="Items" />
+            <End Role="ItemModifires" EntitySet="ItemModifires" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__modif__5165187F" Association="Self.FK__OrderProd__modif__5165187F">
-            <End Role="Modifires" EntitySet="Modifires" />
-            <End Role="OrderProductModifires" EntitySet="OrderProductModifires" />
+          <AssociationSet Name="FK__OrderItem__modif__4D94879B" Association="Self.FK__OrderItem__modif__4D94879B">
+            <End Role="ItemModifires" EntitySet="ItemModifires" />
+            <End Role="OrderItemModifires" EntitySet="OrderItemModifires" />
           </AssociationSet>
-          <AssociationSet Name="FK__ProductMo__modif__46E78A0C" Association="Self.FK__ProductMo__modif__46E78A0C">
-            <End Role="Modifires" EntitySet="Modifires" />
-            <End Role="ProductModifires" EntitySet="ProductModifires" />
+          <AssociationSet Name="FK__OrderItem__item___49C3F6B7" Association="Self.FK__OrderItem__item___49C3F6B7">
+            <End Role="Items" EntitySet="Items" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__order__5070F446" Association="Self.FK__OrderProd__order__5070F446">
-            <End Role="OrderProducts" EntitySet="OrderProducts" />
-            <End Role="OrderProductModifires" EntitySet="OrderProductModifires" />
+          <AssociationSet Name="FK__OrderItem__order__4CA06362" Association="Self.FK__OrderItem__order__4CA06362">
+            <End Role="OrderItems" EntitySet="OrderItems" />
+            <End Role="OrderItemModifires" EntitySet="OrderItemModifires" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__order__4CA06362" Association="Self.FK__OrderProd__order__4CA06362">
+          <AssociationSet Name="FK__OrderItem__order__48CFD27E" Association="Self.FK__OrderItem__order__48CFD27E">
             <End Role="Orders" EntitySet="Orders" />
-            <End Role="OrderProducts" EntitySet="OrderProducts" />
+            <End Role="OrderItems" EntitySet="OrderItems" />
           </AssociationSet>
-          <AssociationSet Name="FK__OrderProd__produ__4D94879B" Association="Self.FK__OrderProd__produ__4D94879B">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="OrderProducts" EntitySet="OrderProducts" />
-          </AssociationSet>
-          <AssociationSet Name="FK__Orders__store_id__49C3F6B7" Association="Self.FK__Orders__store_id__49C3F6B7">
+          <AssociationSet Name="FK__Orders__store_id__45F365D3" Association="Self.FK__Orders__store_id__45F365D3">
             <End Role="Stores" EntitySet="Stores" />
             <End Role="Orders" EntitySet="Orders" />
-          </AssociationSet>
-          <AssociationSet Name="FK__ProductMo__produ__45F365D3" Association="Self.FK__ProductMo__produ__45F365D3">
-            <End Role="Products" EntitySet="Products" />
-            <End Role="ProductModifires" EntitySet="ProductModifires" />
           </AssociationSet>
           <AssociationSet Name="FK__StoreCate__store__3B75D760" Association="Self.FK__StoreCate__store__3B75D760">
             <End Role="Stores" EntitySet="Stores" />
@@ -575,40 +489,50 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="AssignmentEntitiesStoreContainer" CdmEntityContainer="AssignmentEntities1">
+        <EntityContainerMapping StorageEntityContainer="AssignmentModelStoreContainer" CdmEntityContainer="AssignmentEntities">
           <EntitySetMapping Name="Categories">
-            <EntityTypeMapping TypeName="AssignmentEntities.Category">
+            <EntityTypeMapping TypeName="AssignmentModel.Category">
               <MappingFragment StoreEntitySet="Categories">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Modifires">
-            <EntityTypeMapping TypeName="AssignmentEntities.Modifire">
-              <MappingFragment StoreEntitySet="Modifires">
+          <EntitySetMapping Name="ItemModifires">
+            <EntityTypeMapping TypeName="AssignmentModel.ItemModifire">
+              <MappingFragment StoreEntitySet="ItemModifires">
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="product_id" ColumnName="product_id" />
+                <ScalarProperty Name="item_id" ColumnName="item_id" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="price" ColumnName="price" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="OrderProductModifires">
-            <EntityTypeMapping TypeName="AssignmentEntities.OrderProductModifire">
-              <MappingFragment StoreEntitySet="OrderProductModifires">
+          <EntitySetMapping Name="Items">
+            <EntityTypeMapping TypeName="AssignmentModel.Item">
+              <MappingFragment StoreEntitySet="Items">
                 <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="order_product_id" ColumnName="order_product_id" />
+                <ScalarProperty Name="category_id" ColumnName="category_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="price" ColumnName="price" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="OrderItemModifires">
+            <EntityTypeMapping TypeName="AssignmentModel.OrderItemModifire">
+              <MappingFragment StoreEntitySet="OrderItemModifires">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="order_item_id" ColumnName="order_item_id" />
                 <ScalarProperty Name="modifire_id" ColumnName="modifire_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="OrderProducts">
-            <EntityTypeMapping TypeName="AssignmentEntities.OrderProduct">
-              <MappingFragment StoreEntitySet="OrderProducts">
+          <EntitySetMapping Name="OrderItems">
+            <EntityTypeMapping TypeName="AssignmentModel.OrderItem">
+              <MappingFragment StoreEntitySet="OrderItems">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="order_id" ColumnName="order_id" />
-                <ScalarProperty Name="product_id" ColumnName="product_id" />
+                <ScalarProperty Name="item_id" ColumnName="item_id" />
                 <ScalarProperty Name="price" ColumnName="price" />
                 <ScalarProperty Name="quantity" ColumnName="quantity" />
                 <ScalarProperty Name="total" ColumnName="total" />
@@ -616,7 +540,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Orders">
-            <EntityTypeMapping TypeName="AssignmentEntities.Order">
+            <EntityTypeMapping TypeName="AssignmentModel.Order">
               <MappingFragment StoreEntitySet="Orders">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="store_id" ColumnName="store_id" />
@@ -628,27 +552,8 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ProductModifires">
-            <EntityTypeMapping TypeName="AssignmentEntities.ProductModifire">
-              <MappingFragment StoreEntitySet="ProductModifires">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="product_id" ColumnName="product_id" />
-                <ScalarProperty Name="modifire_id" ColumnName="modifire_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Products">
-            <EntityTypeMapping TypeName="AssignmentEntities.Product">
-              <MappingFragment StoreEntitySet="Products">
-                <ScalarProperty Name="id" ColumnName="id" />
-                <ScalarProperty Name="category_id" ColumnName="category_id" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="price" ColumnName="price" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="StoreCategories">
-            <EntityTypeMapping TypeName="AssignmentEntities.StoreCategory">
+            <EntityTypeMapping TypeName="AssignmentModel.StoreCategory">
               <MappingFragment StoreEntitySet="StoreCategories">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="store_id" ColumnName="store_id" />
@@ -658,7 +563,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Stores">
-            <EntityTypeMapping TypeName="AssignmentEntities.Store">
+            <EntityTypeMapping TypeName="AssignmentModel.Store">
               <MappingFragment StoreEntitySet="Stores">
                 <ScalarProperty Name="id" ColumnName="id" />
                 <ScalarProperty Name="name" ColumnName="name" />

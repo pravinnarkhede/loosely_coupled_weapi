@@ -12,27 +12,21 @@ namespace CoditasAssignment.Data
     using System;
     using System.Collections.Generic;
     
-    public partial class Product
+    public partial class ItemModifire
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Product()
+        public ItemModifire()
         {
-            this.Modifires = new HashSet<Modifire>();
-            this.OrderProducts = new HashSet<OrderProduct>();
-            this.ProductModifires = new HashSet<ProductModifire>();
+            this.OrderItemModifires = new HashSet<OrderItemModifire>();
         }
     
         public int id { get; set; }
-        public Nullable<int> category_id { get; set; }
+        public int item_id { get; set; }
         public string name { get; set; }
         public decimal price { get; set; }
     
-        public virtual Category Category { get; set; }
+        public virtual Item Item { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Modifire> Modifires { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<ProductModifire> ProductModifires { get; set; }
+        public virtual ICollection<OrderItemModifire> OrderItemModifires { get; set; }
     }
 }

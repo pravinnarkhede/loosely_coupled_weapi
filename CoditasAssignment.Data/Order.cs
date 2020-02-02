@@ -17,7 +17,7 @@ namespace CoditasAssignment.Data
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public Order()
         {
-            this.OrderProducts = new HashSet<OrderProduct>();
+            this.OrderItems = new HashSet<OrderItem>();
         }
     
         public int id { get; set; }
@@ -29,7 +29,7 @@ namespace CoditasAssignment.Data
         public decimal total { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
+        public virtual ICollection<OrderItem> OrderItems { get; set; }
         public virtual Store Store { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using CoditasAssignment.Data;
 using CoditasAssignment.Data.Infrastructure;
 using CoditasAssignment.Data.Repositories;
@@ -21,14 +22,14 @@ namespace CoditasAssignment.Service
     public class CategoryService : ICategoryService
     {
         private readonly ICategoryRepository categoryRepository;
-        private readonly IProductRepository productRepository;
+        private readonly IItemRepository itemRepository;
 
         private readonly IUnitOfWork unitOfWork;
 
-        public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository, IUnitOfWork unitOfWork)
+        public CategoryService(ICategoryRepository categoryRepository, IItemRepository itemRepository, IUnitOfWork unitOfWork)
         {
             this.categoryRepository = categoryRepository;
-            this.productRepository = productRepository;
+            this.itemRepository = itemRepository;
             this.unitOfWork = unitOfWork;
         }
 
@@ -42,10 +43,11 @@ namespace CoditasAssignment.Service
             else
                 categories = categoryRepository.GetAll().Where(c => c.name == name).ToList();
 
+            var categoryViewModel = Mapper.Map<List<Category>, List<CategoryViewModel>>(categories);
             return new Response<List<CategoryViewModel>>
             {
                 Status = 1,
-                Record = categories.Select(s => new CategoryViewModel { id = s.id, name = s.name }).ToList(),
+                Record = categoryViewModel,
                 Message = "Success"
             };
         }
@@ -56,10 +58,12 @@ namespace CoditasAssignment.Service
             if (category == null)
                 return new Response<CategoryViewModel> { Status = 0, Message = "No record found" };
 
+            var categoryViewModel = Mapper.Map<Category, CategoryViewModel>(category);
+
             return new Response<CategoryViewModel>
             {
                 Status = 1,
-                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Record = categoryViewModel,
                 Message = "Success"
             };
         }
@@ -70,34 +74,42 @@ namespace CoditasAssignment.Service
             if (category == null)
                 return new Response<CategoryViewModel> { Status = 0, Message = "No record found" };
 
+            var categoryViewModel = Mapper.Map<Category, CategoryViewModel>(category);
+
             return new Response<CategoryViewModel>
             {
                 Status = 1,
-                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Record = categoryViewModel,
                 Message = "Success"
             };
         }
 
-        public Response<CategoryViewModel> AddCategory(CategoryViewModel category)
+        public Response<CategoryViewModel> AddCategory(CategoryViewModel categoryViewModel)
         {
-            categoryRepository.Add(new Category { id = category.id, name = category.name });
+            var category = Mapper.Map<CategoryViewModel, Category>(categoryViewModel);
+            categoryRepository.Add(category);
             SaveCategory();
+
+            categoryViewModel = Mapper.Map<Category, CategoryViewModel>(category);
             return new Response<CategoryViewModel>
             {
                 Status = 1,
-                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Record = categoryViewModel,
                 Message = "Success"
             };
         }
 
-        public Response<CategoryViewModel> UpdateCategory(CategoryViewModel category)
+        public Response<CategoryViewModel> UpdateCategory(CategoryViewModel categoryViewModel)
         {
-            categoryRepository.Update(new Category { id = category.id, name = category.name });
+            var category = Mapper.Map<CategoryViewModel, Category>(categoryViewModel);
+            categoryRepository.Update(category);
             SaveCategory();
+            categoryViewModel = Mapper.Map<Category, CategoryViewModel>(category);
+
             return new Response<CategoryViewModel>
             {
                 Status = 1,
-                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Record = categoryViewModel,
                 Message = "Success"
             };
         }
@@ -108,15 +120,17 @@ namespace CoditasAssignment.Service
             if (category == null)
                 return new Response<CategoryViewModel> { Status = 0, Message = "No record found" };
 
-            if (productRepository.GetAll().Where(c => c.category_id == id).Count() > 0)
+            if (itemRepository.GetAll().Where(c => c.category_id == id).Count() > 0)
                 return new Response<CategoryViewModel> { Status = 0, Message = "Failed" };
 
             categoryRepository.Delete(category);
             SaveCategory();
+            var categoryViewModel = Mapper.Map<Category, CategoryViewModel>(category);
+
             return new Response<CategoryViewModel>
             {
                 Status = 1,
-                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Record = categoryViewModel,
                 Message = "Success"
             };
         }
