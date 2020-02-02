@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+﻿using System.Collections.Generic;
 using System.Web.Http;
-using CoditasAssignment.Data;
+using CoditasAssignment.Data.Infrastructure;
+using CoditasAssignment.Data.ViewModel;
 using CoditasAssignment.Service;
 
 namespace CoditasAssignment.Controllers
@@ -19,33 +16,33 @@ namespace CoditasAssignment.Controllers
         }
 
         // GET: api/Category
-        public IEnumerable<Category> Get()
+        public Response<List<CategoryViewModel>> Get()
         {
-           var categories = categoryService.GetCategories().ToList();
+           var categories = categoryService.GetCategories();
             return categories;
         }
 
         // GET: api/Category/5
-        public Category Get(int id)
+        public Response<CategoryViewModel> Get(int id)
         {
            var category = categoryService.GetCategory(id);
             return category;
         }
 
         // POST: api/Category
-        public Category Post(Category category)
+        public Response<CategoryViewModel> Post(CategoryViewModel category)
         {
             return categoryService.AddCategory(category);
         }
 
         // PUT: api/Category/5
-        public Category Put(Category category)
+        public Response<CategoryViewModel> Put(CategoryViewModel category)
         {
             return categoryService.UpdateCategory(category);
         }
 
         // DELETE: api/Category/5
-        public bool Delete(int id)
+        public Response<CategoryViewModel> Delete(int id)
         {
             return categoryService.DeleteCategory(id);
         }

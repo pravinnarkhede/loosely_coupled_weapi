@@ -63,6 +63,7 @@
     <Compile Include="Infrastructure\IRepository.cs" />
     <Compile Include="Infrastructure\IUnitOfWork.cs" />
     <Compile Include="Infrastructure\ReositoryBase.cs" />
+    <Compile Include="Infrastructure\Response.cs" />
     <Compile Include="Infrastructure\UnitOfWork.cs" />
     <Compile Include="Model.Context.cs">
       <AutoGen>True</AutoGen>
@@ -109,6 +110,11 @@
     <Compile Include="StoreCategory.cs">
       <DependentUpon>Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="ViewModel\CategoryViewModel.cs" />
+    <Compile Include="ViewModel\ModifireViewModel.cs" />
+    <Compile Include="ViewModel\OrderViewModel.cs" />
+    <Compile Include="ViewModel\ProductViewModel.cs" />
+    <Compile Include="ViewModel\StoreViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

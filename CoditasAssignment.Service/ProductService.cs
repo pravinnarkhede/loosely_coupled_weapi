@@ -4,17 +4,18 @@ using System.Linq;
 using CoditasAssignment.Data;
 using CoditasAssignment.Data.Infrastructure;
 using CoditasAssignment.Data.Repositories;
+using CoditasAssignment.Data.ViewModel;
 
 namespace CoditasAssignment.Service
 {
     public interface IProductService
     {
-        IEnumerable<Product> GetProducts(string name = null);
-        Product GetProduct(int id);
-        Product GetProduct(string name);
-        Product AddProduct(Product product);
-        Product UpdateProduct(Product product);
-        bool DeleteProduct(int id);
+        Response<List<ProductViewModel>> GetProducts(string name = null);
+        Response<ProductViewModel> GetProduct(int id);
+        Response<ProductViewModel> GetProduct(string name);
+        Response<ProductViewModel> AddProduct(ProductViewModel product);
+        Response<ProductViewModel> UpdateProduct(ProductViewModel product);
+        Response<ProductViewModel> DeleteProduct(int id);
         void SaveProduct();
     }
 
@@ -34,52 +35,137 @@ namespace CoditasAssignment.Service
 
         #region IProductService Members
 
-        public IEnumerable<Product> GetProducts(string name = null)
+        public Response<List<ProductViewModel>> GetProducts(string name = null)
         {
+            var products = new List<Product>();
             if (string.IsNullOrEmpty(name))
-                return productRepository.GetAll();
+                products = productRepository.GetAll().ToList();
             else
-                return productRepository.GetAll().Where(c => c.name == name);
+                products = productRepository.GetAll().Where(c => c.name == name).ToList();
+
+            return new Response<List<ProductViewModel>>
+            {
+                Status = 1,
+                Record = products.Select(s => new ProductViewModel
+                {
+                    Id = s.id,
+                    Name = s.name,
+                    Modifires = s.Modifires.Select(m => new ModifireViewModel
+                    {
+                        Id = m.id,
+                        Name = m.name,
+                        Price = m.price
+                    }).ToList(),
+                }).ToList(),
+                Message = "Success"
+            };
         }
 
-        public Product GetProduct(int id)
+        public Response<ProductViewModel> GetProduct(int id)
         {
             var product = productRepository.GetById(id);
-            return product;
+            if (product == null)
+                return new Response<ProductViewModel> { Status = 0, Message = "No record found" };
+
+            return new Response<ProductViewModel>
+            {
+                Status = 1,
+                Record = new ProductViewModel
+                {
+                    Id = product.id,
+                    Name = product.name,
+                    Modifires = product.Modifires.Select(m => new ModifireViewModel
+                    {
+                        Id = m.id,
+                        Name = m.name,
+                        Price = m.price
+                    }).ToList()
+                },
+                Message = "Success"
+            };
         }
 
-        public Product GetProduct(string name)
+        public Response<ProductViewModel> GetProduct(string name)
         {
             var product = productRepository.GetProductByName(name);
-            return product;
-        }
-
-        public Product AddProduct(Product product)
-        {
-            productRepository.Add(product);
-            SaveProduct();
-            return product;
-        }
-
-        public Product UpdateProduct(Product product)
-        {
-            productRepository.Update(product);
-            SaveProduct();
-            return product;
-        }
-
-        public bool DeleteProduct(int id)
-        {
-            var product = GetProduct(id);
             if (product == null)
-                return false;
+                return new Response<ProductViewModel> { Status = 0, Message = "No record found" };
 
-            if (orderRepository.GetAll().SelectMany(c => c.OrderProducts.Where(f=>f.product_id == id)).Count() > 0)
-                return false;
+            return new Response<ProductViewModel>
+            {
+                Status = 1,
+                Record = new ProductViewModel
+                {
+                    Id = product.id,
+                    Name = product.name,
+                    Modifires = product.Modifires.Select(m => new ModifireViewModel
+                    {
+                        Id = m.id,
+                        Name = m.name,
+                        Price = m.price
+                    }).ToList()
+                },
+                Message = "Success"
+            };
+        }
 
-            productRepository.Delete(product);
+        public Response<ProductViewModel> AddProduct(ProductViewModel product)
+        {
+            productRepository.Add(new Product
+            {
+                name = product.Name,
+                price = product.Price,
+                category_id = product.CategoryId,
+                Modifires = product.Modifires.Select(m=>new Modifire
+                {
+                    name = m.Name,
+                    price = m.Price
+                }).ToList() 
+            });
             SaveProduct();
-            return true;
+
+            return new Response<ProductViewModel>
+            {
+                Status = 1,
+                Record = product,
+                Message = "Success"
+            };
+        }
+
+        public Response<ProductViewModel> UpdateProduct(ProductViewModel product)
+        {
+            var existingProduct = GetProduct(product.Id);
+            if (existingProduct == null)
+                return new Response<ProductViewModel>
+                {
+                    Status = 1,
+                    Record = product,
+                    Message = "Success"
+                };
+
+            //productRepository.Update(existingProduct.Record);
+            //SaveProduct();
+            return new Response<ProductViewModel>
+            {
+                Status = 1,
+                Record = product,
+                Message = "Success"
+            };
+        }
+
+        public Response<ProductViewModel> DeleteProduct(int id)
+        {
+            return null;
+            //var product = GetProduct(id);
+            //if (product == null)
+            //    return false;
+
+            //if (orderRepository.GetAll().SelectMany(c => c.OrderProducts.Where(f => f.product_id == id)).Count() > 0)
+            //    return false;
+
+            //productRepository.Delete(product);
+            //SaveProduct();
+            //return true;
         }
 
         public void SaveProduct()

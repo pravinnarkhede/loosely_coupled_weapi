@@ -21,11 +21,12 @@ namespace CoditasAssignment
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
-            JsonConvert.DefaultSettings = () => new JsonSerializerSettings
-            {
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            };
+
+
+            HttpConfiguration config = GlobalConfiguration.Configuration;
+            config.Formatters.JsonFormatter
+                        .SerializerSettings
+                        .ReferenceLoopHandling = ReferenceLoopHandling.Ignore;            
         }
     }
 }

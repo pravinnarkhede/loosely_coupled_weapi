@@ -1,20 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CoditasAssignment.Data;
 using CoditasAssignment.Data.Infrastructure;
 using CoditasAssignment.Data.Repositories;
+using CoditasAssignment.Data.ViewModel;
 
 namespace CoditasAssignment.Service
 {
     public interface ICategoryService
     {
-        IEnumerable<Category> GetCategories(string name = null);
-        Category GetCategory(int id);
-        Category GetCategory(string name);
-        Category AddCategory(Category category);       
-        Category UpdateCategory(Category category);
-        bool DeleteCategory(int id);
+        Response<List<CategoryViewModel>> GetCategories(string name = null);
+        Response<CategoryViewModel> GetCategory(int id);
+        Response<CategoryViewModel> GetCategory(string name);
+        Response<CategoryViewModel> AddCategory(CategoryViewModel category);
+        Response<CategoryViewModel> UpdateCategory(CategoryViewModel category);
+        Response<CategoryViewModel> DeleteCategory(int id);
         void SaveCategory();
     }
 
@@ -34,52 +34,91 @@ namespace CoditasAssignment.Service
 
         #region ICategoryService Members
 
-        public IEnumerable<Category> GetCategories(string name = null)
+        public Response<List<CategoryViewModel>> GetCategories(string name = null)
         {
+            var categories = new List<Category>();
             if (string.IsNullOrEmpty(name))
-                return categoryRepository.GetAll();
+                categories = categoryRepository.GetAll().ToList();
             else
-                return categoryRepository.GetAll().Where(c => c.name == name);
+                categories = categoryRepository.GetAll().Where(c => c.name == name).ToList();
+
+            return new Response<List<CategoryViewModel>>
+            {
+                Status = 1,
+                Record = categories.Select(s => new CategoryViewModel { id = s.id, name = s.name }).ToList(),
+                Message = "Success"
+            };
         }
 
-        public Category GetCategory(int id)
+        public Response<CategoryViewModel> GetCategory(int id)
         {
             var category = categoryRepository.GetById(id);
-            return category;
+            if (category == null)
+                return new Response<CategoryViewModel> { Status = 0, Message = "No record found" };
+
+            return new Response<CategoryViewModel>
+            {
+                Status = 1,
+                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Message = "Success"
+            };
         }
 
-        public Category GetCategory(string name)
+        public Response<CategoryViewModel> GetCategory(string name)
         {
             var category = categoryRepository.GetCategoryByName(name);
-            return category;
-        }
-
-        public Category AddCategory(Category category)
-        {
-            categoryRepository.Add(category);
-            SaveCategory();
-            return category;
-        }
-
-        public Category UpdateCategory(Category category)
-        {
-            categoryRepository.Update(category);
-            SaveCategory();
-            return category;
-        }
-
-        public bool DeleteCategory(int id)
-        {
-            var category = GetCategory(id);
             if (category == null)
-                return false;
+                return new Response<CategoryViewModel> { Status = 0, Message = "No record found" };
+
+            return new Response<CategoryViewModel>
+            {
+                Status = 1,
+                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Message = "Success"
+            };
+        }
+
+        public Response<CategoryViewModel> AddCategory(CategoryViewModel category)
+        {
+            categoryRepository.Add(new Category { id = category.id, name = category.name });
+            SaveCategory();
+            return new Response<CategoryViewModel>
+            {
+                Status = 1,
+                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Message = "Success"
+            };
+        }
+
+        public Response<CategoryViewModel> UpdateCategory(CategoryViewModel category)
+        {
+            categoryRepository.Update(new Category { id = category.id, name = category.name });
+            SaveCategory();
+            return new Response<CategoryViewModel>
+            {
+                Status = 1,
+                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Message = "Success"
+            };
+        }
+
+        public Response<CategoryViewModel> DeleteCategory(int id)
+        {
+            var category = categoryRepository.GetById(id);
+            if (category == null)
+                return new Response<CategoryViewModel> { Status = 0, Message = "No record found" };
 
             if (productRepository.GetAll().Where(c => c.category_id == id).Count() > 0)
-                return false;
+                return new Response<CategoryViewModel> { Status = 0, Message = "Failed" };
 
             categoryRepository.Delete(category);
             SaveCategory();
-            return true;
+            return new Response<CategoryViewModel>
+            {
+                Status = 1,
+                Record = new CategoryViewModel { id = category.id, name = category.name },
+                Message = "Success"
+            };
         }
 
         public void SaveCategory()

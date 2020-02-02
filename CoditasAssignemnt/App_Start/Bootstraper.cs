@@ -1,13 +1,4 @@
-﻿using Autofac;
-using Autofac.Integration.WebApi;
-using CoditasAssignment.Data.Infrastructure;
-using CoditasAssignment.Data.Repositories;
-using CoditasAssignment.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Web;
+﻿using CoditasAssignemnt.Mappings;
 using System.Web.Http;
 
 namespace CoditasAssignment.App_Start
@@ -18,6 +9,7 @@ namespace CoditasAssignment.App_Start
         {
             //Configure AutoFac  
             AutofacWebapiConfig.Initialize(GlobalConfiguration.Configuration);
+            AutoMapperConfiguration.Configure();
         }
     }
 }
