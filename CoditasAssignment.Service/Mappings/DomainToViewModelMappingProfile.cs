@@ -16,9 +16,13 @@ namespace CoditasAssignment.Service
         }
         protected override void Configure()
         {
+            Mapper.CreateMap<Store, StoreViewModel>();
             Mapper.CreateMap<Category, CategoryViewModel>();
             Mapper.CreateMap<Item, ItemViewModel>();
             Mapper.CreateMap<ItemModifire, ModifireViewModel>();
+            Mapper.CreateMap<Order, OrderViewModel>();
+            Mapper.CreateMap<OrderItem, OrderItemViewModel>();
+            Mapper.CreateMap<OrderItemModifire, OrderItemModifireViewModel>();
         }
     }
 }
