@@ -8,27 +8,20 @@ using System.Threading.Tasks;
 
 namespace CoditasAssignment.Data.Repositories
 {
-    public class ModifireRepository : RepositoryBase<Modifire>, IModifireRepository
+    public class ModifireRepository : RepositoryBase<ItemModifire>, IModifireRepository
     {
         public ModifireRepository(IDbFactory dbFactory)
             : base(dbFactory) { }
 
-        public Modifire GetModifireByName(string modifireName)
+        public ItemModifire GetModifireByName(string modifireName)
         {
-            var modifire = this.DbContext.Modifires.Where(c => c.name == modifireName).FirstOrDefault();
-
+            var modifire = this.DbContext.ItemModifires.Where(c => c.name == modifireName).FirstOrDefault();
             return modifire;
-        }
-
-        public override Modifire Update(Modifire entity)
-        {
-            // entity.DateUpdated = DateTime.Now;
-           return base.Update(entity);
         }
     }
 
-    public interface IModifireRepository : IRepository<Modifire>
+    public interface IModifireRepository : IRepository<ItemModifire>
     {
-        Modifire GetModifireByName(string modifireName);
+        ItemModifire GetModifireByName(string modifireName);
     }
 }

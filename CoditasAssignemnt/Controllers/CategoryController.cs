@@ -18,15 +18,13 @@ namespace CoditasAssignment.Controllers
         // GET: api/Category
         public Response<List<CategoryViewModel>> Get()
         {
-           var categories = categoryService.GetCategories();
-            return categories;
+            return categoryService.GetCategories();
         }
 
         // GET: api/Category/5
         public Response<CategoryViewModel> Get(int id)
         {
-           var category = categoryService.GetCategory(id);
-            return category;
+            return categoryService.GetCategory(id);
         }
 
         // POST: api/Category

@@ -16,14 +16,7 @@ namespace CoditasAssignment.Data.Repositories
         public Item GetItemByName(string itemName)
         {
             var item = this.DbContext.Items.Where(c => c.name == itemName).FirstOrDefault();
-
             return item;
-        }
-
-        public override Item Update(Item entity)
-        {
-            // entity.DateUpdated = DateTime.Now;
-           return base.Update(entity);
         }
     }
 

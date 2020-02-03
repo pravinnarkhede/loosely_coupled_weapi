@@ -23,15 +23,13 @@ namespace CoditasAssignemnt.Controllers
         // GET: api/Item
         public Response<List<ItemViewModel>> Get()
         {
-            var items = itemService.GetItems();
-            return items;
+            return itemService.GetItems();
         }
 
         // GET: api/Item/5
         public Response<ItemViewModel> Get(int id)
         {
-            var item = itemService.GetItem(id);
-            return item;
+            return itemService.GetItem(id);
         }
 
         // POST: api/Item

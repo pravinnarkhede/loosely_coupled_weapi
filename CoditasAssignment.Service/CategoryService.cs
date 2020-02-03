@@ -12,7 +12,6 @@ namespace CoditasAssignment.Service
     {
         Response<List<CategoryViewModel>> GetCategories(string name = null);
         Response<CategoryViewModel> GetCategory(int id);
-        Response<CategoryViewModel> GetCategory(string name);
         Response<CategoryViewModel> AddCategory(CategoryViewModel category);
         Response<CategoryViewModel> UpdateCategory(CategoryViewModel category);
         Response<CategoryViewModel> DeleteCategory(int id);
@@ -67,23 +66,7 @@ namespace CoditasAssignment.Service
                 Message = "Success"
             };
         }
-
-        public Response<CategoryViewModel> GetCategory(string name)
-        {
-            var category = categoryRepository.GetCategoryByName(name);
-            if (category == null)
-                return new Response<CategoryViewModel> { Status = 0, Message = "No record found" };
-
-            var categoryViewModel = Mapper.Map<Category, CategoryViewModel>(category);
-
-            return new Response<CategoryViewModel>
-            {
-                Status = 1,
-                Record = categoryViewModel,
-                Message = "Success"
-            };
-        }
-
+        
         public Response<CategoryViewModel> AddCategory(CategoryViewModel categoryViewModel)
         {
             var category = Mapper.Map<CategoryViewModel, Category>(categoryViewModel);
@@ -103,8 +86,7 @@ namespace CoditasAssignment.Service
         {
             var category = Mapper.Map<CategoryViewModel, Category>(categoryViewModel);
             categoryRepository.Update(category);
-            SaveCategory();
-            categoryViewModel = Mapper.Map<Category, CategoryViewModel>(category);
+            SaveCategory();           
 
             return new Response<CategoryViewModel>
             {
@@ -121,7 +103,7 @@ namespace CoditasAssignment.Service
                 return new Response<CategoryViewModel> { Status = 0, Message = "No record found" };
 
             if (itemRepository.GetAll().Where(c => c.category_id == id).Count() > 0)
-                return new Response<CategoryViewModel> { Status = 0, Message = "Failed" };
+                return new Response<CategoryViewModel> { Status = 0, Message = "Reference exist in item" };
 
             categoryRepository.Delete(category);
             SaveCategory();
@@ -130,7 +112,6 @@ namespace CoditasAssignment.Service
             return new Response<CategoryViewModel>
             {
                 Status = 1,
-                Record = categoryViewModel,
                 Message = "Success"
             };
         }

@@ -44,20 +44,21 @@ namespace CoditasAssignment.Service
             else
                 items = itemRepository.GetAll().Where(c => c.name == name).ToList();
 
+            if (items.Count == 0)
+                return new Response<List<ItemViewModel>> { Status = 0, Message = "No record found" };
+
+            var itemViewModel = new List<ItemViewModel>();
+            foreach (var item in items)
+            {
+                itemViewModel.Add(Mapper.Map<Item, ItemViewModel>(item));
+                var itemModifires = item.ItemModifires.ToList();
+                var modifireViewModel = Mapper.Map<List<ItemModifire>, List<ModifireViewModel>>(itemModifires);
+                itemViewModel.Last().Modifires = modifireViewModel;
+            }
             return new Response<List<ItemViewModel>>
             {
                 Status = 1,
-                Record = items.Select(s => new ItemViewModel
-                {
-                    Id = s.id,
-                    Name = s.name,
-                    Modifires = s.ItemModifires.Select(m => new ModifireViewModel
-                    {
-                        Id = m.id,
-                        Name = m.name,
-                        Price = m.price
-                    }).ToList(),
-                }).ToList(),
+                Record = itemViewModel,
                 Message = "Success"
             };
         }
@@ -69,7 +70,9 @@ namespace CoditasAssignment.Service
                 return new Response<ItemViewModel> { Status = 0, Message = "No record found" };
 
             var itemViewModel = Mapper.Map<Item, ItemViewModel>(item);
-
+            var itemModifires = item.ItemModifires.ToList();
+            var modifireViewModel = Mapper.Map<List<ItemModifire>, List<ModifireViewModel>>(itemModifires);
+            itemViewModel.Modifires = modifireViewModel;
             return new Response<ItemViewModel>
             {
                 Status = 1,
@@ -84,31 +87,10 @@ namespace CoditasAssignment.Service
             if (item == null)
                 return new Response<ItemViewModel> { Status = 0, Message = "No record found" };
 
-            return new Response<ItemViewModel>
-            {
-                Status = 1,
-                Record = new ItemViewModel
-                {
-                    Id = item.id,
-                    Name = item.name,
-                    Modifires = item.ItemModifires.Select(m => new ModifireViewModel
-                    {
-                        Id = m.id,
-                        Name = m.name,
-                        Price = m.price
-                    }).ToList()
-                },
-                Message = "Success"
-            };
-        }
-
-        public Response<ItemViewModel> AddItem(ItemViewModel itemViewModel)
-        {
-            var item = Mapper.Map<ItemViewModel, Item>(itemViewModel);
-            itemRepository.Add(item);
-            SaveItem();
-
-            itemViewModel = Mapper.Map<Item, ItemViewModel>(item);
+            var itemViewModel = Mapper.Map<Item, ItemViewModel>(item);
+            var itemModifires = item.ItemModifires.ToList();
+            var modifireViewModel = Mapper.Map<List<ItemModifire>, List<ModifireViewModel>>(itemModifires);
+            itemViewModel.Modifires = modifireViewModel;
             return new Response<ItemViewModel>
             {
                 Status = 1,
@@ -117,40 +99,58 @@ namespace CoditasAssignment.Service
             };
         }
 
-        public Response<ItemViewModel> UpdateItem(ItemViewModel item)
+        public Response<ItemViewModel> AddItem(ItemViewModel itemViewModel)
         {
-            var existingItem = GetItem(item.Id);
-            if (existingItem == null)
-                return new Response<ItemViewModel>
-                {
-                    Status = 1,
-                    Record = item,
-                    Message = "Success"
-                };
+            var items = itemRepository.GetAll().Where(c => c.name == itemViewModel.Name).ToList();
+            if (items.Count > 0)
+                return new Response<ItemViewModel> { Status = 0, Message = "Record already exist." };
+            var item = Mapper.Map<ItemViewModel, Item>(itemViewModel);   
 
-            //itemRepository.Update(existingItem.Record);
-            //SaveItem();
+            itemRepository.Add(item);
+            SaveItem();
+
+            itemViewModel = Mapper.Map<Item, ItemViewModel>(item);           
             return new Response<ItemViewModel>
             {
                 Status = 1,
-                Record = item,
+                Record = itemViewModel,
+                Message = "Success"
+            };
+        }
+
+        public Response<ItemViewModel> UpdateItem(ItemViewModel itemViewModel)
+        {
+            var existingItem = itemRepository.GetById(itemViewModel.Id);
+            if (existingItem == null)
+                return new Response<ItemViewModel> { Status = 0, Message = "No record found" };
+
+            var item = Mapper.Map<ItemViewModel, Item>(itemViewModel);
+            itemRepository.Update(item);
+            SaveItem();
+            return new Response<ItemViewModel>
+            {
+                Status = 1,
+                Record = itemViewModel,
                 Message = "Success"
             };
         }
 
         public Response<ItemViewModel> DeleteItem(int id)
         {
-            return null;
-            //var item = GetItem(id);
-            //if (item == null)
-            //    return false;
+            var item = itemRepository.GetById(id);
+            if (item == null)
+                return new Response<ItemViewModel> { Status = 0, Message = "No record found" };
 
-            //if (orderRepository.GetAll().SelectMany(c => c.OrderItems.Where(f => f.item_id == id)).Count() > 0)
-            //    return false;
+            if (orderRepository.GetAll().SelectMany(c => c.OrderItems.Where(f => f.item_id == id)).Count() > 0)
+                return new Response<ItemViewModel> { Status = 0, Message = "Reference exist in order" };
 
-            //itemRepository.Delete(item);
-            //SaveItem();
-            //return true;
+            itemRepository.Delete(item);
+            SaveItem();
+            return new Response<ItemViewModel>
+            {
+                Status = 1,
+                Message = "Success"
+            };
         }
 
         public void SaveItem()

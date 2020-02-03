@@ -55,7 +55,9 @@
     <Compile Include="Mappings\DomainToViewModelMappingProfile.cs" />
     <Compile Include="Mappings\ViewModelToDomainMappingProfile.cs" />
     <Compile Include="ItemService.cs" />
+    <Compile Include="ModifireService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StoreService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -18,6 +18,7 @@ namespace CoditasAssignment.Service
         {
             Mapper.CreateMap<Category, CategoryViewModel>();
             Mapper.CreateMap<Item, ItemViewModel>();
+            Mapper.CreateMap<ItemModifire, ModifireViewModel>();
         }
     }
 }
